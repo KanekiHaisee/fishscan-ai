@@ -20,7 +20,7 @@ const createWindow = () => {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
     },
-    icon: path.join(__dirname, '../public/favicon.ico'),
+    icon: path.join(__dirname, '../public/app-icon.png'),
     title: 'Fish Parasite Detection System',
     show: false,
   });
