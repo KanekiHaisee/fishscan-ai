@@ -26,10 +26,15 @@ const CameraCapture = () => {
         audio: false,
       });
 
+      streamRef.current = stream;
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        setIsStreaming(true);
+        // Wait for video to be ready before showing
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play();
+          setIsStreaming(true);
+        };
       }
 
       toast({
@@ -143,14 +148,14 @@ const CameraCapture = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="relative bg-muted rounded-lg overflow-hidden aspect-video">
-            {isStreaming ? (
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                className="w-full h-full object-cover"
-              />
-            ) : (
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className={`w-full h-full object-cover ${isStreaming ? 'block' : 'hidden'}`}
+            />
+            {!isStreaming && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <Camera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
