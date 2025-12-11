@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Loader2, Trash2, Image as ImageIcon, AlertCircle } from "lucide-react";
 import {
   AlertDialog,
@@ -26,6 +27,7 @@ interface FishImage {
 
 const ImageGallery = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [images, setImages] = useState<FishImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
@@ -141,15 +143,15 @@ const ImageGallery = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold mb-2">Image Gallery</h2>
+          <h2 className="text-3xl font-bold mb-2">{t("gallery.title")}</h2>
           <p className="text-muted-foreground">
-            View and manage your uploaded fish images
+            {t("gallery.subtitle")}
           </p>
         </div>
         {images.length > 0 && (
           <div className="flex gap-3">
             <Button variant="outline" onClick={selectAll}>
-              {selectedImages.size === images.length ? "Deselect All" : "Select All"}
+              {selectedImages.size === images.length ? t("gallery.deselectAll") : t("gallery.selectAll")}
             </Button>
             {selectedImages.size > 0 && (
               <Button
@@ -160,12 +162,12 @@ const ImageGallery = () => {
                 {deleting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Deleting...
+                    {t("gallery.deleting")}
                   </>
                 ) : (
                   <>
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Delete ({selectedImages.size})
+                    {t("gallery.delete")} ({selectedImages.size})
                   </>
                 )}
               </Button>
@@ -178,9 +180,9 @@ const ImageGallery = () => {
         <Card className="p-12">
           <div className="text-center">
             <ImageIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-xl font-semibold mb-2">No images yet</h3>
+            <h3 className="text-xl font-semibold mb-2">{t("gallery.empty")}</h3>
             <p className="text-muted-foreground mb-6">
-              Upload images or capture from camera to get started
+              {t("gallery.emptyDesc")}
             </p>
           </div>
         </Card>
@@ -227,17 +229,16 @@ const ImageGallery = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-destructive" />
-              Delete Images
+              {t("gallery.deleteTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete {selectedImages.size} image(s)?
-              This action cannot be undone.
+              {t("gallery.deleteConfirm").replace("{count}", String(selectedImages.size))}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteSelected} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete
+              {t("gallery.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
