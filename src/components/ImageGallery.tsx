@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Loader2, Trash2, Image as ImageIcon, AlertCircle } from "lucide-react";
+import { Loader2, Trash2, Image as ImageIcon, AlertCircle, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +16,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 interface FishImage {
   id: string;
@@ -33,6 +38,19 @@ const ImageGallery = () => {
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<FishImage | null>(null);
+  const [expandOnClick, setExpandOnClick] = useState(() => {
+    return localStorage.getItem("app-expand-on-click") !== "false";
+  });
+
+  // Listen for storage changes to sync settings
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setExpandOnClick(localStorage.getItem("app-expand-on-click") !== "false");
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   useEffect(() => {
     loadImages();
@@ -86,6 +104,18 @@ const ImageGallery = () => {
       setSelectedImages(new Set());
     } else {
       setSelectedImages(new Set(images.map((img) => img.id)));
+    }
+  };
+
+  const handleImageClick = (image: FishImage, e: React.MouseEvent) => {
+    // Check if clicking on checkbox
+    const target = e.target as HTMLElement;
+    if (target.closest('[role="checkbox"]')) return;
+    
+    if (expandOnClick) {
+      setExpandedImage(image);
+    } else {
+      toggleImageSelection(image.id);
     }
   };
 
@@ -194,7 +224,7 @@ const ImageGallery = () => {
               className={`overflow-hidden transition-smooth cursor-pointer hover:shadow-lg ${
                 selectedImages.has(image.id) ? "ring-2 ring-primary" : ""
               }`}
-              onClick={() => toggleImageSelection(image.id)}
+              onClick={(e) => handleImageClick(image, e)}
             >
               <div className="relative aspect-square bg-muted">
                 <img
@@ -223,6 +253,32 @@ const ImageGallery = () => {
           ))}
         </div>
       )}
+
+      {/* Image Lightbox Dialog */}
+      <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
+        <DialogContent className="max-w-4xl w-full p-0 bg-background/95 backdrop-blur-sm border-border">
+          <DialogClose className="absolute right-4 top-4 z-10 rounded-full bg-background/80 p-2 hover:bg-background">
+            <X className="h-5 w-5" />
+            <span className="sr-only">{t("common.cancel")}</span>
+          </DialogClose>
+          {expandedImage && (
+            <div className="relative">
+              <img
+                src={getImageUrl(expandedImage.file_path)}
+                alt={expandedImage.file_name}
+                className="w-full h-auto max-h-[80vh] object-contain"
+              />
+              <div className="p-4 border-t border-border">
+                <p className="font-medium">{expandedImage.file_name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {expandedImage.upload_type === "camera" ? "Camera" : "Upload"} •{" "}
+                  {new Date(expandedImage.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
