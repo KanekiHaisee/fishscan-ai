@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Globe, Moon, Sun, Bell, Zap, FolderOpen, Info } from "lucide-react";
+import { Globe, Moon, Sun, Bell, Zap, Maximize2, Info } from "lucide-react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -26,6 +26,9 @@ const Settings = () => {
   });
   const [autoAnalyze, setAutoAnalyze] = useState(() => {
     return localStorage.getItem("app-auto-analyze") === "true";
+  });
+  const [expandOnClick, setExpandOnClick] = useState(() => {
+    return localStorage.getItem("app-expand-on-click") !== "false"; // default true
   });
 
   useEffect(() => {
@@ -47,6 +50,10 @@ const Settings = () => {
   useEffect(() => {
     localStorage.setItem("app-auto-analyze", String(autoAnalyze));
   }, [autoAnalyze]);
+
+  useEffect(() => {
+    localStorage.setItem("app-expand-on-click", String(expandOnClick));
+  }, [expandOnClick]);
 
   return (
     <div className="space-y-6">
@@ -146,6 +153,27 @@ const Settings = () => {
               id="autoAnalyze"
               checked={autoAnalyze}
               onCheckedChange={setAutoAnalyze}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Expand on Click */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Maximize2 className="w-5 h-5 text-primary" />
+            {t("settings.expandOnClick")}
+          </CardTitle>
+          <CardDescription>{t("settings.expandOnClick.desc")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="expandOnClick">{t("settings.expandOnClick.enable")}</Label>
+            <Switch
+              id="expandOnClick"
+              checked={expandOnClick}
+              onCheckedChange={setExpandOnClick}
             />
           </div>
         </CardContent>
