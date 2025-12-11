@@ -3,16 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Fish, LogOut, Upload, Camera, ImageIcon } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Fish, LogOut, Upload, Camera, ImageIcon, Settings as SettingsIcon } from "lucide-react";
 import UploadImages from "@/components/UploadImages";
 import CameraCapture from "@/components/CameraCapture";
 import ImageGallery from "@/components/ImageGallery";
+import Settings from "@/components/Settings";
+import LanguageSelector from "@/components/LanguageSelector";
 
-type ViewType = "upload" | "camera" | "gallery";
+type ViewType = "upload" | "camera" | "gallery" | "settings";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [currentView, setCurrentView] = useState<ViewType>("upload");
 
   const handleSignOut = async () => {
@@ -21,13 +25,13 @@ const Dashboard = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Error signing out",
+        title: t("auth.errorSigningOut"),
         description: error.message,
       });
     } else {
       toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
+        title: t("auth.signedOut"),
+        description: t("auth.signedOutDesc"),
       });
       navigate("/auth");
     }
@@ -36,21 +40,27 @@ const Dashboard = () => {
   const menuItems = [
     {
       id: "upload" as ViewType,
-      label: "Upload Images",
+      label: t("nav.upload"),
       icon: Upload,
-      description: "Upload from local storage or cloud",
+      description: t("nav.upload.desc"),
     },
     {
       id: "camera" as ViewType,
-      label: "Capture Images",
+      label: t("nav.camera"),
       icon: Camera,
-      description: "Capture real-time from USB camera",
+      description: t("nav.camera.desc"),
     },
     {
       id: "gallery" as ViewType,
-      label: "View Images",
+      label: t("nav.gallery"),
       icon: ImageIcon,
-      description: "Check uploaded images",
+      description: t("nav.gallery.desc"),
+    },
+    {
+      id: "settings" as ViewType,
+      label: t("nav.settings"),
+      icon: SettingsIcon,
+      description: "Configure app preferences",
     },
   ];
 
@@ -59,15 +69,17 @@ const Dashboard = () => {
       {/* Sidebar - 30% */}
       <aside className="w-[30%] min-w-[300px] bg-card border-r border-border flex flex-col">
         <div className="p-6 border-b border-border">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
               <Fish className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">Parasite Detector</h1>
-              <p className="text-sm text-muted-foreground">Anisaki Detection</p>
+              <h1 className="text-xl font-bold">{t("app.title")}</h1>
+              <p className="text-sm text-muted-foreground">{t("app.subtitle")}</p>
             </div>
           </div>
+          {/* Language Selector */}
+          <LanguageSelector />
         </div>
 
         <nav className="flex-1 p-4">
@@ -112,7 +124,7 @@ const Dashboard = () => {
             className="w-full"
           >
             <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
+            {t("nav.signOut")}
           </Button>
         </div>
       </aside>
@@ -123,6 +135,7 @@ const Dashboard = () => {
           {currentView === "upload" && <UploadImages />}
           {currentView === "camera" && <CameraCapture />}
           {currentView === "gallery" && <ImageGallery />}
+          {currentView === "settings" && <Settings />}
         </div>
       </main>
     </div>
