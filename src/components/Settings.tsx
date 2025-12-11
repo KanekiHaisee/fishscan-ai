@@ -53,7 +53,7 @@ const Settings = () => {
       <div>
         <h1 className="text-2xl font-bold">{t("settings.title")}</h1>
         <p className="text-muted-foreground mt-1">
-          Manage your application preferences
+          {t("settings.subtitle")}
         </p>
       </div>
 
@@ -120,7 +120,7 @@ const Settings = () => {
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
-            <Label htmlFor="notifications">Enable notifications</Label>
+            <Label htmlFor="notifications">{t("settings.notifications.enable")}</Label>
             <Switch
               id="notifications"
               checked={notifications}
@@ -141,7 +141,7 @@ const Settings = () => {
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
-            <Label htmlFor="autoAnalyze">Enable auto-analyze</Label>
+            <Label htmlFor="autoAnalyze">{t("settings.autoAnalyze.enable")}</Label>
             <Switch
               id="autoAnalyze"
               checked={autoAnalyze}
@@ -166,8 +166,8 @@ const Settings = () => {
           </div>
           <Separator />
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Application</span>
-            <span className="font-medium">Anisaki Parasite Detector</span>
+            <span className="text-muted-foreground">{t("settings.application")}</span>
+            <span className="font-medium">{t("app.fullName")}</span>
           </div>
         </CardContent>
       </Card>

@@ -3,11 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Upload, Loader2, HardDrive } from "lucide-react";
 import CloudStoragePicker from "./CloudStoragePicker";
 
 const UploadImages = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cloudProvider, setCloudProvider] = useState<"google" | "dropbox" | null>(null);
@@ -85,9 +87,9 @@ const UploadImages = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold mb-2">Upload Images</h2>
+        <h2 className="text-3xl font-bold mb-2">{t("upload.title")}</h2>
         <p className="text-muted-foreground">
-          Upload fish images from your local storage or cloud to analyze for Anisaki parasites
+          {t("upload.subtitle")}
         </p>
       </div>
 
@@ -97,23 +99,23 @@ const UploadImages = () => {
             <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
               <HardDrive className="w-6 h-6 text-accent" />
             </div>
-            <CardTitle>Local Storage</CardTitle>
-            <CardDescription>Upload images from your computer</CardDescription>
+            <CardTitle>{t("upload.local")}</CardTitle>
+            <CardDescription>{t("upload.local.desc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              Select one or multiple fish images from your local device to upload for analysis.
+              {t("upload.dragDrop")}
             </p>
             <Button className="w-full" disabled={uploading}>
               {uploading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Uploading...
+                  {t("common.loading")}
                 </>
               ) : (
                 <>
                   <Upload className="mr-2 h-4 w-4" />
-                  Choose Files
+                  {t("upload.local.button")}
                 </>
               )}
             </Button>
@@ -127,12 +129,12 @@ const UploadImages = () => {
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" fill="none"/>
               </svg>
             </div>
-            <CardTitle>Cloud Storage</CardTitle>
-            <CardDescription>Upload from cloud services</CardDescription>
+            <CardTitle>{t("upload.cloudStorage")}</CardTitle>
+            <CardDescription>{t("upload.cloudStorage.desc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
-              Select images directly from your Google Drive or Dropbox account.
+              {t("upload.cloudStorage.select")}
             </p>
             <div className="flex gap-2">
               <Button 
@@ -176,13 +178,13 @@ const UploadImages = () => {
 
       <Card className="bg-muted/50">
         <CardHeader>
-          <CardTitle className="text-lg">Upload Guidelines</CardTitle>
+          <CardTitle className="text-lg">{t("upload.guidelines")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• Supported formats: JPG, PNG, WEBP</p>
-          <p>• Maximum file size: 10MB per image</p>
-          <p>• For best results, ensure images are clear and well-lit</p>
-          <p>• Multiple images can be uploaded at once</p>
+          <p>• {t("upload.formats")}</p>
+          <p>• {t("upload.maxSize")}</p>
+          <p>• {t("upload.quality")}</p>
+          <p>• {t("upload.multiple")}</p>
         </CardContent>
       </Card>
 

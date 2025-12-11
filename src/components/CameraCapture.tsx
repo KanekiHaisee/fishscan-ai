@@ -3,10 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Camera, Loader2, Circle, XCircle } from "lucide-react";
 
 const CameraCapture = () => {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [isStreaming, setIsStreaming] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -133,17 +135,17 @@ const CameraCapture = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold mb-2">Camera Capture</h2>
+        <h2 className="text-3xl font-bold mb-2">{t("camera.title")}</h2>
         <p className="text-muted-foreground">
-          Capture real-time images using your USB camera for immediate analysis
+          {t("camera.subtitle")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Live Camera Feed</CardTitle>
+          <CardTitle>{t("camera.liveFeed")}</CardTitle>
           <CardDescription>
-            Start the camera to capture fish images in real-time
+            {t("camera.liveFeed.desc")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -159,7 +161,7 @@ const CameraCapture = () => {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <Camera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Camera not started</p>
+                  <p className="text-muted-foreground">{t("camera.notStarted")}</p>
                 </div>
               </div>
             )}
@@ -169,7 +171,7 @@ const CameraCapture = () => {
             {!isStreaming ? (
               <Button onClick={startCamera} className="flex-1">
                 <Camera className="mr-2 h-4 w-4" />
-                Start Camera
+                {t("camera.start")}
               </Button>
             ) : (
               <>
@@ -181,18 +183,18 @@ const CameraCapture = () => {
                   {capturing ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Capturing...
+                      {t("camera.capturing")}
                     </>
                   ) : (
                     <>
                       <Circle className="mr-2 h-4 w-4" />
-                      Capture Photo
+                      {t("camera.capture")}
                     </>
                   )}
                 </Button>
                 <Button onClick={stopCamera} variant="destructive">
                   <XCircle className="mr-2 h-4 w-4" />
-                  Stop Camera
+                  {t("camera.stop")}
                 </Button>
               </>
             )}
@@ -202,13 +204,13 @@ const CameraCapture = () => {
 
       <Card className="bg-muted/50">
         <CardHeader>
-          <CardTitle className="text-lg">Camera Tips</CardTitle>
+          <CardTitle className="text-lg">{t("camera.tips")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• Ensure adequate lighting for clear images</p>
-          <p>• Hold the camera steady when capturing</p>
-          <p>• Position the fish specimen clearly in frame</p>
-          <p>• USB cameras provide better quality than built-in webcams</p>
+          <p>• {t("camera.tip1")}</p>
+          <p>• {t("camera.tip2")}</p>
+          <p>• {t("camera.tip3")}</p>
+          <p>• {t("camera.tip4")}</p>
         </CardContent>
       </Card>
     </div>
