@@ -30,7 +30,11 @@ interface FishImage {
   created_at: string;
 }
 
-const ImageGallery = () => {
+interface ImageGalleryProps {
+  projectId?: string;
+}
+
+const ImageGallery = ({ projectId }: ImageGalleryProps) => {
   const { toast } = useToast();
   const { t } = useLanguage();
   const [images, setImages] = useState<FishImage[]>([]);
@@ -54,7 +58,7 @@ const ImageGallery = () => {
 
   useEffect(() => {
     loadImages();
-  }, []);
+  }, [projectId]);
 
   const loadImages = async () => {
     try {
@@ -62,11 +66,18 @@ const ImageGallery = () => {
       
       if (!user) return;
 
-      const { data, error } = await supabase
+      let query = supabase
         .from("fish_images")
         .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        .eq("user_id", user.id);
+      
+      if (projectId) {
+        query = query.eq("project_id", projectId);
+      } else {
+        query = query.is("project_id", null);
+      }
+
+      const { data, error } = await query.order("created_at", { ascending: false });
 
       if (error) throw error;
 

@@ -7,13 +7,16 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Upload, Loader2, HardDrive } from "lucide-react";
 import CloudStoragePicker from "./CloudStoragePicker";
 
-const UploadImages = () => {
+interface UploadImagesProps {
+  projectId?: string;
+}
+
+const UploadImages = ({ projectId }: UploadImagesProps) => {
   const { toast } = useToast();
   const { t } = useLanguage();
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [cloudProvider, setCloudProvider] = useState<"google" | "dropbox" | null>(null);
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
@@ -53,6 +56,7 @@ const UploadImages = () => {
             file_path: filePath,
             file_size: file.size,
             upload_type: "upload",
+            project_id: projectId || null,
           });
 
         if (dbError) throw dbError;

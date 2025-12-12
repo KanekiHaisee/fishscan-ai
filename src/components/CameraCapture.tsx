@@ -6,14 +6,17 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Camera, Loader2, Circle, XCircle } from "lucide-react";
 
-const CameraCapture = () => {
+interface CameraCaptureProps {
+  projectId?: string;
+}
+
+const CameraCapture = ({ projectId }: CameraCaptureProps) => {
   const { toast } = useToast();
   const { t } = useLanguage();
   const [isStreaming, setIsStreaming] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-
   useEffect(() => {
     return () => {
       // Cleanup: stop camera when component unmounts
@@ -113,6 +116,7 @@ const CameraCapture = () => {
           file_path: fileName,
           file_size: blob.size,
           upload_type: "camera",
+          project_id: projectId || null,
         });
 
       if (dbError) throw dbError;
