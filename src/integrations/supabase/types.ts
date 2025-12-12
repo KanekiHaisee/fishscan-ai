@@ -23,6 +23,7 @@ export type Database = {
           file_size: number | null
           id: string
           parasite_detected: boolean | null
+          project_id: string | null
           updated_at: string
           upload_type: string | null
           user_id: string
@@ -35,6 +36,7 @@ export type Database = {
           file_size?: number | null
           id?: string
           parasite_detected?: boolean | null
+          project_id?: string | null
           updated_at?: string
           upload_type?: string | null
           user_id: string
@@ -47,11 +49,20 @@ export type Database = {
           file_size?: number | null
           id?: string
           parasite_detected?: boolean | null
+          project_id?: string | null
           updated_at?: string
           upload_type?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fish_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -74,6 +85,33 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
